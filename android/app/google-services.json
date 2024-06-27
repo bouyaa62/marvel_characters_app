@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "794626699938",
+    "project_id": "marvel-characters-app-53631",
+    "storage_bucket": "marvel-characters-app-53631.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:794626699938:android:c1c851edd0567ac8d35dfb",
+        "android_client_info": {
+          "package_name": "com.example.marvel_characters_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGYaSYAmakCwoJ_xV9MC0FCsaWiE26xj0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
