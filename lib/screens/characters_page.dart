@@ -3,23 +3,37 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:marvel_characters_app/cubit/character_cubit.dart';
 import 'package:marvel_characters_app/cubit/character_state.dart';
 import 'package:marvel_characters_app/models/character.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class CharactersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Characters')),
+      appBar: AppBar(
+        title: Text('Characters'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/favorites');
+            },
+            child: Text(
+              'Favorites',
+              style: TextStyle(color: Colors.black, fontSize: 16),
+            ),
+          ),
+        ],
+      ),
       body: BlocBuilder<CharacterCubit, CharacterState>(
         builder: (context, state) {
           if (state.isLoading && state.characters.isEmpty) {
             return Center(child: CircularProgressIndicator());
           } else {
             return ListView.builder(
-              itemCount: state.characters.length + 1,
+              itemCount: state.characters.length + (state.isLoading ? 1 : 0),
               itemBuilder: (context, index) {
                 if (index < state.characters.length) {
                   Character character = state.characters[index];
+                  bool isFavorite =
+                      state.favorites.any((fav) => fav.id == character.id);
                   return GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(
@@ -28,71 +42,50 @@ class CharactersScreen extends StatelessWidget {
                         arguments: character,
                       );
                     },
-                    child: ListTile(
-                      leading: Image.network(character.imageUrl),
-                      title: Text(character.name),
-                      subtitle: Text('ID: ${character.id}'),
-                      trailing: FavoriteButton(character: character),
+                    child: Card(
+                      elevation: 4,
+                      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      child: ListTile(
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.network(
+                            character.imageUrl,
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        title: Text(
+                          character.name,
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        subtitle: Text('ID: ${character.id}'),
+                        trailing: IconButton(
+                          icon: Icon(
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                            color: isFavorite ? Colors.red : Colors.grey,
+                          ),
+                          onPressed: () {
+                            context
+                                .read<CharacterCubit>()
+                                .toggleFavorite(character);
+                          },
+                        ),
+                      ),
                     ),
                   );
                 } else if (state.isLoading) {
                   return Center(child: CircularProgressIndicator());
                 } else {
-                  // Trigger load more characters
+                  // Placeholder for when loading more characters
                   context.read<CharacterCubit>().fetchCharacters();
-                  return Container(); // Placeholder widget
+                  return Container();
                 }
               },
             );
           }
         },
       ),
-    );
-  }
-}
-
-class FavoriteButton extends StatefulWidget {
-  final Character character;
-
-  const FavoriteButton({Key? key, required this.character}) : super(key: key);
-
-  @override
-  _FavoriteButtonState createState() => _FavoriteButtonState();
-}
-
-class _FavoriteButtonState extends State<FavoriteButton> {
-  bool isFavorite = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadFavoriteStatus();
-  }
-
-  Future<void> _loadFavoriteStatus() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      isFavorite = prefs.getBool(widget.character.id.toString()) ?? false;
-    });
-  }
-
-  Future<void> _toggleFavorite() async {
-    final prefs = await SharedPreferences.getInstance();
-    final newStatus = !isFavorite;
-    await prefs.setBool(widget.character.id.toString(), newStatus);
-    setState(() {
-      isFavorite = newStatus;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(
-        isFavorite ? Icons.favorite : Icons.favorite_border,
-        color: isFavorite ? Colors.red : null,
-      ),
-      onPressed: _toggleFavorite,
     );
   }
 }

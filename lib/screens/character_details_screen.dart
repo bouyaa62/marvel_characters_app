@@ -9,23 +9,53 @@ class CharacterDetailsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text('Character Details')),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Image.network(character.imageUrl),
-          SizedBox(height: 20),
-          Text('Name: ${character.name}'),
-          SizedBox(height: 20),
-          Text('Comics:', style: TextStyle(fontWeight: FontWeight.bold)),
-          SizedBox(height: 10),
-          ...character.urls.entries.map((entry) {
-            return ListTile(
-              title: Text(entry.key),
-              subtitle: Text(entry.value),
-              onTap: () {},
-            );
-          }).toList(),
-        ],
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Image.network(
+              character.imageUrl,
+              height: 300,
+              fit: BoxFit.cover,
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Name: ${character.name}',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Comics:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: character.urls.entries.map((entry) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: InkWell(
+                    onTap: () {
+                      // Handle tap, e.g., open URL
+                      // Example: launchURL(entry.value);
+                    },
+                    child: ListTile(
+                      title: Text(
+                        entry.key,
+                        style: TextStyle(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                      subtitle: Text(entry.value),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
       ),
     );
   }

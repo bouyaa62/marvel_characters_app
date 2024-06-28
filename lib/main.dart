@@ -7,6 +7,7 @@ import 'package:marvel_characters_app/cubit/auth_state.dart';
 import 'package:marvel_characters_app/cubit/character_cubit.dart';
 import 'package:marvel_characters_app/screens/character_details_screen.dart';
 import 'package:marvel_characters_app/screens/characters_page.dart';
+import 'package:marvel_characters_app/screens/favorites_screen.dart';
 import 'package:marvel_characters_app/screens/login_page.dart';
 import 'package:marvel_characters_app/services/character_repository.dart';
 
@@ -23,7 +24,8 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => AuthCubit(FirebaseAuth.instance)),
         BlocProvider(
-            create: (context) => CharacterCubit(CharacterRepository())),
+            create: (context) =>
+                CharacterCubit(CharacterRepository())..fetchCharacters()),
       ],
       child: MaterialApp(
         title: 'Flutter Auth App',
@@ -35,6 +37,7 @@ class MyApp extends StatelessWidget {
           '/': (context) => AuthGate(),
           '/characters': (context) => CharactersScreen(),
           '/character-details': (context) => CharacterDetailsScreen(),
+          '/favorites': (context) => FavoritesScreen(),
         },
       ),
     );
