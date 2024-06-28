@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:marvel_characters_app/cubit/auth_cubit.dart';
 import 'package:marvel_characters_app/cubit/auth_state.dart';
-import 'package:marvel_characters_app/screens/home_page.dart';
+import 'package:marvel_characters_app/cubit/character_cubit.dart';
+import 'package:marvel_characters_app/screens/character_details_screen.dart';
+import 'package:marvel_characters_app/screens/characters_page.dart';
 import 'package:marvel_characters_app/screens/login_page.dart';
-import 'cubit/auth_cubit.dart';
+import 'package:marvel_characters_app/services/character_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,10 +19,23 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AuthCubit(FirebaseAuth.instance),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => AuthCubit(FirebaseAuth.instance)),
+        BlocProvider(
+            create: (context) => CharacterCubit(CharacterRepository())),
+      ],
       child: MaterialApp(
-        home: AuthGate(),
+        title: 'Flutter Auth App',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => AuthGate(),
+          '/characters': (context) => CharactersScreen(),
+          '/character-details': (context) => CharacterDetailsScreen(),
+        },
       ),
     );
   }
@@ -31,7 +47,7 @@ class AuthGate extends StatelessWidget {
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         if (state.isAuthenticated) {
-          return HomePage();
+          return CharactersScreen();
         } else {
           return LoginPage();
         }
