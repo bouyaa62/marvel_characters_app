@@ -5,11 +5,8 @@ import 'package:marvel_characters_app/models/character.dart';
 
 class CharacterRepository {
   static const String _baseUrl = 'https://gateway.marvel.com/v1/public';
-  final String _apiKey =
-      '00d777b62d5eb935e16f26bb317b70ca'; // Replace with your Marvel public API key
-  final String _privateKey =
-      '10fcf4b614116a6dcc6db23e66389a7b19e130f0'; // Replace with your Marvel private API key
-
+  final String _apiKey = '00d777b62d5eb935e16f26bb317b70ca';
+  final String _privateKey = '10fcf4b614116a6dcc6db23e66389a7b19e130f0';
   String _generateHash(String timeStamp) {
     var bytes = utf8.encode('$timeStamp$_privateKey$_apiKey');
     var hash = crypto.md5.convert(bytes);

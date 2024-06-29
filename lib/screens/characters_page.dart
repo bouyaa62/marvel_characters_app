@@ -77,7 +77,6 @@ class CharactersScreen extends StatelessWidget {
                 } else if (state.isLoading) {
                   return Center(child: CircularProgressIndicator());
                 } else {
-                  // Placeholder for when loading more characters
                   context.read<CharacterCubit>().fetchCharacters();
                   return Container();
                 }

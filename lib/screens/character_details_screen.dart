@@ -36,10 +36,7 @@ class CharacterDetailsScreen extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: InkWell(
-                    onTap: () {
-                      // Handle tap, e.g., open URL
-                      // Example: launchURL(entry.value);
-                    },
+                    onTap: () {},
                     child: ListTile(
                       title: Text(
                         entry.key,
